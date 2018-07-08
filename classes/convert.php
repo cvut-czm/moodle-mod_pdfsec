@@ -28,7 +28,6 @@
 
 namespace mod_pdfsec;
 
-
 use mod_pdfsec\entity\pdfsec_settings;
 
 defined('MOODLE_INTERNAL') || die();
@@ -36,11 +35,11 @@ defined('MOODLE_INTERNAL') || die();
 class convert {
     protected function __construct() {
     }
+
     public static function convert($file, pdfsec_settings $settings) {
-        $old_content=$file->get_content();
+        $old_content = $file->get_content();
         $pdf = new \FPDI();
         $pdf->setSourceFile();
-
 
     }
 }

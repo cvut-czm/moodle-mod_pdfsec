@@ -84,18 +84,26 @@ class pdfsec_settings {
         return $this->{$name};
     }
 
+    public function has(string $name): bool {
+        return $this->{$name} != null;
+    }
+
     public function get_subject() {
         return $this->getter('subject');
     }
+
     public function get_keywords() {
         return $this->getter('keywords');
     }
+
     public function get_author() {
         return $this->getter('author');
     }
+
     public function get_printheader() {
         return $this->getter('printheader');
     }
+
     public function get_printfooter() {
         return $this->getter('printheader');
     }

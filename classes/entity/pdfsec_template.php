@@ -72,10 +72,11 @@ class pdfsec_template extends database_entity {
         return pdfsec_template::get(['id' => $this->basedon]);
     }
 
-    public function get_settings(bool $completetree=false): pdfsec_settings {
-        $settings=pdfsec_settings::from_json($this->settings);
-        if(!$completetree)
+    public function get_settings(bool $completetree = false): pdfsec_settings {
+        $settings = pdfsec_settings::from_json($this->settings);
+        if (!$completetree) {
             return $settings;
+        }
         $settings->set_parent($this->get_basedon()->get_settings(true));
         return $settings;
     }

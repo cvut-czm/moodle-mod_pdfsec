@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 $capabilities = [
         'mod/pdfsec:addinstance' =>
                 [
@@ -36,22 +38,22 @@ $capabilities = [
                         'manager' => CAP_ALLOW,
                 ]
         ],
-    'mod/pdfsec:privatetemplatemanage' => [
-            'riskbitmask' => RISK_XSS,
-            'captype' => 'write',
-            'contextlevel' => CONTEXT_SYSTEM,
-            'archetypes' => [
-                    'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ]
-    ],
-    'mod/pdfsec:publictemplatemanage' => [
-            'riskbitmask' => RISK_XSS,
-            'captype' => 'write',
-            'contextlevel' => CONTEXT_SYSTEM,
-            'archetypes' => [
-                    'editingteacher' => CAP_PREVENT,
-                    'manager' => CAP_ALLOW
-            ]
-    ]
+        'mod/pdfsec:privatetemplatemanage' => [
+                'riskbitmask' => RISK_XSS,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => [
+                        'editingteacher' => CAP_ALLOW,
+                        'manager' => CAP_ALLOW
+                ]
+        ],
+        'mod/pdfsec:publictemplatemanage' => [
+                'riskbitmask' => RISK_XSS,
+                'captype' => 'write',
+                'contextlevel' => CONTEXT_SYSTEM,
+                'archetypes' => [
+                        'editingteacher' => CAP_PREVENT,
+                        'manager' => CAP_ALLOW
+                ]
+        ]
 ];

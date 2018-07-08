@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
 
-function pdfsec_add_instance($pdfsec)
-{
-
-}
-function pdfsec_update_instance($pdfsec)
-{
+function pdfsec_add_instance($pdfsec) {
 
 }
-function pdfsec_delete_instance($pdfsec)
-{
+
+function pdfsec_update_instance($pdfsec) {
+
+}
+
+function pdfsec_delete_instance($pdfsec) {
 
 }

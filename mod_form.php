@@ -26,11 +26,29 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
+defined('MOODLE_INTERNAL') || die();
 
-$id = required_param('id', PARAM_INT);           // Course ID
+class mod_pdfsec_mod_form extends \mod_pdfsec\form\template_form {
 
-// Ensure that the course specified is valid
-if (!$course = $DB->get_record('course', array('id' => $id))) {
-    print_error('Course ID is incorrect');
+    protected function definition() {
+
+        $mform = $this->_form;
+
+        $mform->addElement('filepicker', 'input_pdf', get_string('input_pdf', 'mod_pdfsec'), null,
+                ['accepted_types' => ['.pdf']]);
+        $mform->addElement('selectyesno', 'use_template', get_string('use_template', 'mod_pdfsec'));
+        $mform->addElement('selectgroups', 'templates', get_string('templates', 'mod_pdfsec'), [
+                'public' => ['no' => get_string('no')]
+        ]);
+        $this->define_shared_fields();
+        foreach (['misc', 'permission', 'watermark', 'first_page', 'last_page'] as $el) {
+            $mform->disabledIf($el . '_title', 'use_template', 'eq', '0');
+        }
+        $mform->hideIf('templates', 'use_template', 'eq', '0');
+
+        $this->standard_coursemodule_elements();
+
+        $this->add_action_buttons();
+
+    }
 }
