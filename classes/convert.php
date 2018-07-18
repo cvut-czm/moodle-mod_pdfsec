@@ -37,7 +37,7 @@ class convert {
     }
 
     public static function convert($file, pdfsec_settings $settings) {
-        $old_content = $file->get_content();
+        $oldcontent = $file->get_content();
         $pdf = new \FPDI();
         $pdf->setSourceFile();
 

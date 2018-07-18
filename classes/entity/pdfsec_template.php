@@ -49,7 +49,7 @@ class pdfsec_template extends database_entity {
     protected $settings;
 
     protected function before_delete() {
-        $childs = pdfsec_template::get_all(['based_on' => $this->id]);
+        $childs = self::get_all(['based_on' => $this->id]);
         if ($this->basedon != null) {
             $basedon = $this->get_basedon()->get_settings();
         } else {
@@ -69,7 +69,7 @@ class pdfsec_template extends database_entity {
     }
 
     public function get_basedon(): pdfsec_template {
-        return pdfsec_template::get(['id' => $this->basedon]);
+        return self::get(['id' => $this->basedon]);
     }
 
     public function get_settings(bool $completetree = false): pdfsec_settings {

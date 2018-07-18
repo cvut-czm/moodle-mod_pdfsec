@@ -27,6 +27,8 @@
  */
 
 namespace mod_pdfsec\form;
+defined('MOODLE_INTERNAL') || die();
+
 global $CFG;
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
@@ -97,29 +99,29 @@ class template_form extends moodleform_mod {
 
     private function define_pdf_datasource(string $identifier) {
         $form = $this->_form;
-        $id_img = 'img';
-        $id_text = 'txt';
-        $id_code = 'cdr';
+        $idimg = 'img';
+        $idtext = 'txt';
+        $idcode = 'cdr';
         $selector = 'sel';
 
         $form->addElement('header', $identifier . '_title', get_string('title_' . $identifier, 'mod_pdfsec'));
         $form->addElement('select', $identifier . '_' . $selector, get_string('datasource', 'mod_pdfsec'), [
-                $id_img => get_string('datasource_' . $id_img, 'mod_pdfsec'),
-                $id_text => get_string('datasource_' . $id_text, 'mod_pdfsec'),
-                $id_code => get_string('datasource_' . $id_code, 'mod_pdfsec')
+                $idimg => get_string('datasource_' . $idimg, 'mod_pdfsec'),
+                $idtext => get_string('datasource_' . $idtext, 'mod_pdfsec'),
+                $idcode => get_string('datasource_' . $idcode, 'mod_pdfsec')
         ]);
 
-        $form->addElement('filepicker', $identifier . '_' . $id_img, get_string('datasource_' . $id_img, 'mod_pdfsec'), null,
+        $form->addElement('filepicker', $identifier . '_' . $idimg, get_string('datasource_' . $idimg, 'mod_pdfsec'), null,
                 ['accepted_types' => ['.png', '.jpg', '.jpeg']]);
-        $form->addElement('textarea', $identifier . '_' . $id_text, get_string('datasource_' . $id_text, 'mod_pdfsec'));
-        $form->setType($identifier . '_' . $id_text, PARAM_RAW);
+        $form->addElement('textarea', $identifier . '_' . $idtext, get_string('datasource_' . $idtext, 'mod_pdfsec'));
+        $form->setType($identifier . '_' . $idtext, PARAM_RAW);
 
-        $form->addElement('textarea', $identifier . '_' . $id_code, get_string('datasource_' . $id_code, 'mod_pdfsec'));
-        $form->setType($identifier . '_' . $id_code, PARAM_RAW);
+        $form->addElement('textarea', $identifier . '_' . $idcode, get_string('datasource_' . $idcode, 'mod_pdfsec'));
+        $form->setType($identifier . '_' . $idcode, PARAM_RAW);
 
-        $form->hideIf($identifier . '_' . $id_img, $identifier . '_' . $selector, 'neq', $id_img);
-        $form->hideIf($identifier . '_' . $id_text, $identifier . '_' . $selector, 'neq', $id_text);
-        $form->hideIf($identifier . '_' . $id_code, $identifier . '_' . $selector, 'neq', $id_code);
+        $form->hideIf($identifier . '_' . $idimg, $identifier . '_' . $selector, 'neq', $idimg);
+        $form->hideIf($identifier . '_' . $idtext, $identifier . '_' . $selector, 'neq', $idtext);
+        $form->hideIf($identifier . '_' . $idcode, $identifier . '_' . $selector, 'neq', $idcode);
 
     }
 }
