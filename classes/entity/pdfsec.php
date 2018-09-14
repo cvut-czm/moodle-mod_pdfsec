@@ -29,6 +29,7 @@
 namespace mod_pdfsec\entity;
 
 use local_cool\entity\database_entity;
+use mod_pdfsec\convert;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,20 +40,49 @@ class pdfsec extends database_entity {
     protected $course;
     /** @var string $name */
     protected $name;
+    /** @var string $settings */
+    protected $settings;
     /** @var $string $intro */
-    protected $intro;
+    protected $intro = '';
     /** @var int $introformat */
-    protected $introformat;
+    protected $introformat = 1;
 
     protected $template;
+
     // endregion.
+
+    public function set_settings(pdfsec_settings $settings) {
+        $this->settings = $settings->to_json();
+    }
+
+    public function set_name(string $name) {
+        $this->name = $name;
+    }
+
+    public function set_course($id) {
+        $this->course = $id;
+    }
+
+    public function get_name() {
+        return $this->name;
+    }
+    public function get_filename() {
+        $name=convert::convert_to_safe_string($this->name);
+        return $name.'.pdf';
+    }
 
     // region File system.
 
-    public function has_file(): bool {
+    public function has_input_file() : bool {
         $fs = get_file_storage();
-        $files = $fs->get_area_files(\context_course::instance($this->course)->instanceid, 'mod_pdfsec', 'content');
-        return count($files) > 0;
+        $file = $fs->get_file(\context_course::instance($this->course)->id, 'mod_pdfsec', 'v1', $this->id, '/', 'input.pdf');
+        return $file !== false;
+    }
+
+    public function has_output_file() : bool {
+        $fs = get_file_storage();
+        $file = $fs->get_file(\context_course::instance($this->course)->id, 'mod_pdfsec', 'v1', $this->id, '/', 'output.pdf');
+        return $file !== false;
     }
 
     // endregion.

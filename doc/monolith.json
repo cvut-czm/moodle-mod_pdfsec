@@ -1,0 +1,32 @@
+{
+  "name": "PDF Sec",
+  "category": "Moodle - Activity plugin",
+  "short_description": "Moodle plugin",
+  "license": "GPLv3",
+  "authors": [
+    "CZM",
+    "Jiří Fryč",
+    "Aleš Gorecki"
+  ],
+  "email": "moodle@fel.cvut.cz",
+  "issues": "https://helpdesk.cvut.cz/projects/FEL_MOODLE/summary",
+  "from": "2017",
+  "tags": [
+    "php",
+    "moodle"
+  ],
+  "namespaces": [
+    "block_mykos"
+  ],
+  "files": {
+    "include": [
+      "classes"
+    ],
+    "extensions": [
+      "php"
+    ]
+  },
+  "versions": [
+    "1.0"
+  ]
+}

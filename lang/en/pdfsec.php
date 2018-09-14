@@ -19,6 +19,7 @@ $string['modulenameplural'] = 'PDFsec';
 $string['pluginname'] = 'PDFsec';
 $string['userpreferences'] = 'User preferences';
 
+$string['displayname'] = 'Display name';
 $string['override'] = 'Override value';
 $string['datasource'] = 'Data source';
 $string['datasource_img'] = 'Image';
@@ -26,6 +27,7 @@ $string['datasource_txt'] = 'Text';
 $string['datasource_cdr'] = 'PDFsec syntax';
 $string['use_template'] = 'Use template';
 $string['templates'] = 'Templates';
+$string['pluginadministration'] ='';
 
 $string['subject'] = 'Subject';
 $string['input_pdf'] = 'Input PDF';

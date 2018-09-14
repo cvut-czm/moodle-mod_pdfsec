@@ -16,14 +16,28 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-function pdfsec_add_instance($pdfsec) {
-
+function pdfsec_add_instance($pdfsec, mod_pdfsec_mod_form $mform) {
+    $entity=new \mod_pdfsec\entity\pdfsec();
+    $entity->set_name($pdfsec->name);
+    $entity->set_course($pdfsec->course);
+    $entity->set_settings(\mod_pdfsec\convert::form_to_settings($pdfsec));
+    $entity->save();
+    $mform->save_stored_file('input_pdf', $mform->get_context()->get_course_context()->id
+            , 'mod_pdfsec', 'v1',$entity->get_id(),'/','input.pdf' );
+    return $entity->get_id();
 }
 
-function pdfsec_update_instance($pdfsec) {
-
+function pdfsec_update_instance($pdfsec, mod_pdfsec_mod_form $mform) {
+    $entity=\mod_pdfsec\entity\pdfsec::get($pdfsec->id);
+    $entity->set_name($pdfsec->displayname);
+    $entity->set_course($pdfsec->course);
+    $entity->set_settings(\mod_pdfsec\convert::form_to_settings($pdfsec));
+    $entity->save();
+    $mform->save_stored_file('input_pdf', $mform->get_context()->get_course_context()->id
+            , 'mod_pdfsec', 'v1',$entity->get_id(),'/','input.pdf' );
+    return $entity->get_id();
 }
 
 function pdfsec_delete_instance($pdfsec) {
-
+    \mod_pdfsec\entity\pdfsec::delete($pdfsec);
 }

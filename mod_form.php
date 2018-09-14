@@ -34,6 +34,8 @@ class mod_pdfsec_mod_form extends \mod_pdfsec\form\template_form {
 
         $mform = $this->_form;
 
+        $mform->addElement('text','name',get_string('displayname','mod_pdfsec'));
+        $mform->setType('name',PARAM_ALPHANUMEXT);
         $mform->addElement('filepicker', 'input_pdf', get_string('input_pdf', 'mod_pdfsec'), null,
                 ['accepted_types' => ['.pdf']]);
         $mform->addElement('selectyesno', 'use_template', get_string('use_template', 'mod_pdfsec'));
@@ -42,7 +44,11 @@ class mod_pdfsec_mod_form extends \mod_pdfsec\form\template_form {
         ]);
         $this->define_shared_fields();
         foreach (['misc', 'permission', 'watermark', 'first_page', 'last_page'] as $el) {
-            $mform->disabledIf($el . '_title', 'use_template', 'eq', '0');
+            $mform->hideIf($el . '_title', 'use_template', 'eq', '1');
+            $mform->disabledIf($el . '_sel', 'use_template', 'eq', '1');
+            $mform->disabledIf($el . '_img', 'use_template', 'eq', '1');
+            $mform->disabledIf($el . '_cdr', 'use_template', 'eq', '1');
+            $mform->disabledIf($el . '_txt', 'use_template', 'eq', '1');
         }
         $mform->hideIf('templates', 'use_template', 'eq', '0');
 

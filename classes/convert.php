@@ -33,7 +33,38 @@ use mod_pdfsec\entity\pdfsec_settings;
 defined('MOODLE_INTERNAL') || die();
 
 class convert {
+
+    private static $convert_table = [
+            'ä' => 'a', 'Ä' => 'A', 'á' => 'a', 'Á' => 'A', 'à' => 'a', 'À' => 'A', 'ã' => 'a', 'Ã' => 'A', 'â' => 'a', 'Â' => 'A',
+            'č' => 'c', 'Č' => 'C', 'ć' => 'c', 'Ć' => 'C',
+            'ď' => 'd', 'Ď' => 'D',
+            'ě' => 'e', 'Ě' => 'E', 'é' => 'e', 'É' => 'E', 'ë' => 'e', 'Ë' => 'E', 'è' => 'e', 'È' => 'E', 'ê' => 'e', 'Ê' => 'E',
+            'í' => 'i', 'Í' => 'I', 'ï' => 'i', 'Ï' => 'I', 'ì' => 'i', 'Ì' => 'I', 'î' => 'i', 'Î' => 'I', 'ľ' => 'l',
+            'Ľ' => 'L', 'ĺ' => 'l', 'Ĺ' => 'L',
+            'ń' => 'n', 'Ń' => 'N', 'ň' => 'n', 'Ň' => 'N', 'ñ' => 'n', 'Ñ' => 'N',
+            'ó' => 'o', 'Ó' => 'O', 'ö' => 'o', 'Ö' => 'O', 'ô' => 'o', 'Ô' => 'O', 'ò' => 'o', 'Ò' => 'O', 'õ' => 'o', 'Õ' => 'O',
+            'ő' => 'o', 'Ő' => 'O',
+            'ř' => 'r', 'Ř' => 'R', 'ŕ' => 'r', 'Ŕ' => 'R',
+            'š' => 's', 'Š' => 'S', 'ś' => 's', 'Ś' => 'S', 'ť' => 't',
+            'Ť' => 'T',
+            'ú' => 'u', 'Ú' => 'U', 'ů' => 'u', 'Ů' => 'U', 'ü' => 'u', 'Ü' => 'U', 'ù' => 'u', 'Ù' => 'U', 'ũ' => 'u', 'Ũ' => 'U',
+            'û' => 'u', 'Û' => 'U',
+            'ý' => 'y', 'Ý' => 'Y',
+            'ž' => 'z', 'Ž' => 'Z', 'ź' => 'z', 'Ź' => 'Z'];
+
+    public static function convert_to_safe_string(string $string, $replace_space = true) {
+        $table = self::$convert_table;
+        if ($replace_space) {
+            $table[' '] = '_';
+        }
+        strtr($string, $table);
+    }
+
     protected function __construct() {
+    }
+
+    public static function form_to_settings($formdata) : pdfsec_settings {
+        return pdfsec_settings::get_default();
     }
 
     public static function convert($file, pdfsec_settings $settings) {
