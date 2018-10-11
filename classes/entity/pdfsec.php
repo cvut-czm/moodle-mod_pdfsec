@@ -15,13 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This is a one-line short description of the file.
+ * Database entity PDFsec
  *
- * You can have a rather longer description of the file as well,
- * if you like, and it can span multiple lines.
- *
- * @package    xxxxxx
- * @category   xxxxxx
+ * @package    mod_pdfsec
+ * @category   entity
  * @copyright  2018 CVUT CZM, Jiri Fryc
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -35,24 +32,24 @@ defined('MOODLE_INTERNAL') || die();
 
 class pdfsec extends database_entity {
     const TABLENAME = 'pdfsec';
+
     // region Variables.
-    /** @var int $course */
+    /** @var int $course Moodle course*/
     protected $course;
-    /** @var string $name */
+    /** @var string $name Instance name*/
     protected $name;
-    /** @var string $settings */
+    /** @var string $settings Settings for pdf generation stored in JSON format.*/
     protected $settings;
-    /** @var $string $intro */
+    /** @var $string $intro Intro text is not used, but needed by moodle core.*/
     protected $intro = '';
-    /** @var int $introformat */
+    /** @var int $introformat Intro format is not used, but needed by moodle core.*/
     protected $introformat = 1;
 
-    protected $template;
 
     // endregion.
 
-    public function set_settings(pdfsec_settings $settings) {
-        $this->settings = $settings->to_json();
+    public function set_settings($settings) {
+        $this->settings = $settings;
     }
 
     public function set_name(string $name) {
@@ -66,24 +63,9 @@ class pdfsec extends database_entity {
     public function get_name() {
         return $this->name;
     }
-    public function get_filename() {
-        $name=convert::convert_to_safe_string($this->name);
-        return $name.'.pdf';
+
+    public function get_settings() : pdfsec_settings
+    {
+        return pdfsec_settings::wrapper(json_decode($this->settings,true));
     }
-
-    // region File system.
-
-    public function has_input_file() : bool {
-        $fs = get_file_storage();
-        $file = $fs->get_file(\context_course::instance($this->course)->id, 'mod_pdfsec', 'v1', $this->id, '/', 'input.pdf');
-        return $file !== false;
-    }
-
-    public function has_output_file() : bool {
-        $fs = get_file_storage();
-        $file = $fs->get_file(\context_course::instance($this->course)->id, 'mod_pdfsec', 'v1', $this->id, '/', 'output.pdf');
-        return $file !== false;
-    }
-
-    // endregion.
 }

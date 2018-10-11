@@ -24,21 +24,5 @@
                 <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
             </INDEXES>
         </TABLE>
-        <TABLE NAME="pdfsec_template" COMMENT="">
-            <FIELDS>
-                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
-                <FIELD NAME="settings" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="basedon" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-                <FIELD NAME="user" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-                <FIELD NAME="visibility" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-            </FIELDS>
-            <KEYS>
-                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-            </KEYS>
-            <INDEXES>
-                <INDEX NAME="user" UNIQUE="false" FIELDS="user"/>
-            </INDEXES>
-        </TABLE>
     </TABLES>
 </XMLDB>

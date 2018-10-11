@@ -46,25 +46,30 @@ class template_form extends moodleform_mod {
         // TODO: Implement definition() method.
     }
 
-    protected function get_settings(): pdfsec_settings {
-        if ($this->_customdata == null) {
-            $this->_customdata = pdfsec_settings::get_default();
-        }
-        return $this->_customdata;
-    }
 
     protected function define_shared_fields() {
         $form = $this->_form;
-        $settings = $this->get_settings();
 
         $form->addElement('header', 'permission_general', get_string('title_general', 'mod_pdfsec'));
+        $form->addElement('selectyesno', 'general_sel', get_string('use_template', 'mod_pdfsec'));
+        $form->setDefault('general_sel',1);
         foreach (['subject', 'keywords', 'author', 'language'] as $element) {
             $form->addElement('text', $element, get_string($element, 'mod_pdfsec'));
             $form->setType($element, PARAM_ALPHANUMEXT);
+            $form->hideIf($element,'general_sel','neq',0);
+
+            $form->addElement('text', $element.'_global', get_string($element, 'mod_pdfsec'));
+            $form->setType($element.'_global', PARAM_ALPHANUMEXT);
+            $form->hideIf($element.'_global','general_sel','neq',1);
+            $form->disabledIf($element.'_global','general_sel','neq','3');
         }
         $this->define_pdf_datasource('first_page');
         $this->define_pdf_datasource('last_page');
         $this->define_pdf_datasource('watermark');
+        $form->addElement('select', 'watermarkvisible', get_string('watermarkvisibletypes', 'mod_pdfsec'), [
+                1 => get_string('watermarkvisible', 'mod_pdfsec'),
+                0 => get_string('watermarkinvisible', 'mod_pdfsec')
+        ]);
         $this->define_permission_settings();
         $this->define_misc_settings();
 
@@ -79,49 +84,60 @@ class template_form extends moodleform_mod {
 
     private function define_permission_settings() {
         $form = $this->_form;
+
         $form->addElement('header', 'permission_title', get_string('title_permission', 'mod_pdfsec'));
-        $form->addElement('selectyesno', 'perm_print', get_string('perm_print', 'mod_pdfsec'));
-        $form->addElement('selectyesno', 'perm_modify', get_string('perm_modify', 'mod_pdfsec'));
-        $form->addElement('selectyesno', 'perm_extract', get_string('perm_extract', 'mod_pdfsec'));
-        $form->addElement('selectyesno', 'perm_copy', get_string('perm_copy', 'mod_pdfsec'));
-        $form->addElement('selectyesno', 'perm_assemble', get_string('perm_assemble', 'mod_pdfsec'));
+        $form->addElement('selectyesno', 'perm_sel', get_string('use_template', 'mod_pdfsec'));
+        $form->setDefault('perm_sel',1);
+        foreach([0=>'',1=>'_global'] as $key=>$value)
+        {
+            $form->addElement('selectyesno', 'perm_print'.$value, get_string('perm_print', 'mod_pdfsec'));
+            $form->addHelpButton('perm_print'.$value,'perm_print','mod_pdfsec');
+            $form->hideIf('perm_print'.$value,'perm_sel','neq',$key);
+
+            $form->addElement('selectyesno', 'perm_modify'.$value, get_string('perm_modify', 'mod_pdfsec'));
+            $form->addHelpButton('perm_modify'.$value,'perm_modify','mod_pdfsec');
+            $form->hideIf('perm_modify'.$value,'perm_sel','neq',$key);
+
+            $form->addElement('selectyesno', 'perm_extract'.$value, get_string('perm_extract', 'mod_pdfsec'));
+            $form->addHelpButton('perm_extract'.$value,'perm_extract','mod_pdfsec');
+            $form->hideIf('perm_extract'.$value,'perm_sel','neq',$key);
+
+            $form->addElement('selectyesno', 'perm_copy'.$value, get_string('perm_copy', 'mod_pdfsec'));
+            $form->addHelpButton('perm_copy','perm_copy','mod_pdfsec');
+            $form->hideIf('perm_copy'.$value,'perm_sel','neq',$key);
+
+            $form->addElement('selectyesno', 'perm_assemble'.$value, get_string('perm_assemble', 'mod_pdfsec'));
+            $form->addHelpButton('perm_assemble'.$value,'perm_assemble','mod_pdfsec');
+            $form->hideIf('perm_assemble'.$value,'perm_sel','neq',$key);
+        }
+        $form->disabledIf('perm_print'.'_global','perm_sel','neq','3');
+        $form->disabledIf('perm_modify'.'_global','perm_sel','neq','3');
+        $form->disabledIf('perm_extract'.'_global','perm_sel','neq','3');
+        $form->disabledIf('perm_copy'.'_global','perm_sel','neq','3');
+        $form->disabledIf('perm_assemble'.'_global','perm_sel','neq','3');
+
+        $form->addElement('passwordunmask', 'perm_view_password', get_string('perm_view_password', 'mod_pdfsec'));
+        $form->addElement('passwordunmask', 'perm_edit_password', get_string('perm_edit_password', 'mod_pdfsec'));
     }
 
-    private function define_override_checkbox(string $element) {
-        $form = $this->_form;
-        $settings = $this->get_settings();
-        $override = 'override';
-
-        $form->addElement('advcheckbox', $element . '_' . $override, get_string('override', 'mod_pdfsec'));
-        $form->setDefault($element . '_' . $override, $settings->has($element));
-        $form->disabledIf($element, $element . '_' . $override, 'notchecked');
-    }
 
     private function define_pdf_datasource(string $identifier) {
         $form = $this->_form;
-        $idimg = 'img';
-        $idtext = 'txt';
-        $idcode = 'cdr';
         $selector = 'sel';
 
         $form->addElement('header', $identifier . '_title', get_string('title_' . $identifier, 'mod_pdfsec'));
-        $form->addElement('select', $identifier . '_' . $selector, get_string('datasource', 'mod_pdfsec'), [
-                $idimg => get_string('datasource_' . $idimg, 'mod_pdfsec'),
-                $idtext => get_string('datasource_' . $idtext, 'mod_pdfsec'),
-                $idcode => get_string('datasource_' . $idcode, 'mod_pdfsec')
-        ]);
+        $form->addElement('selectyesno', $identifier . '_' . $selector, get_string('use_template', 'mod_pdfsec'));
+        $form->setDefault($identifier . '_' . $selector,1);
 
-        $form->addElement('filepicker', $identifier . '_' . $idimg, get_string('datasource_' . $idimg, 'mod_pdfsec'), null,
-                ['accepted_types' => ['.png', '.jpg', '.jpeg']]);
-        $form->addElement('textarea', $identifier . '_' . $idtext, get_string('datasource_' . $idtext, 'mod_pdfsec'));
-        $form->setType($identifier . '_' . $idtext, PARAM_RAW);
+        $form->addElement('textarea', $identifier . '_own', get_string('datasource_definition', 'mod_pdfsec'),'wrap="virtual" rows="20" cols="50"');
+        $form->setType($identifier . '_own', PARAM_RAW);
 
-        $form->addElement('textarea', $identifier . '_' . $idcode, get_string('datasource_' . $idcode, 'mod_pdfsec'));
-        $form->setType($identifier . '_' . $idcode, PARAM_RAW);
+        $form->addElement('textarea', $identifier . '_global', get_string('datasource_definition', 'mod_pdfsec'),'wrap="virtual" rows="20" cols="50"');
+        $form->disabledIf($identifier.'_global',$identifier.'_'.$selector,'neq','3');
+        $form->setType($identifier . '_global', PARAM_RAW);
 
-        $form->hideIf($identifier . '_' . $idimg, $identifier . '_' . $selector, 'neq', $idimg);
-        $form->hideIf($identifier . '_' . $idtext, $identifier . '_' . $selector, 'neq', $idtext);
-        $form->hideIf($identifier . '_' . $idcode, $identifier . '_' . $selector, 'neq', $idcode);
+        $form->hideIf($identifier.'_global',$identifier.'_'.$selector,'neq','1');
+        $form->hideIf($identifier.'_own',$identifier.'_'.$selector,'neq','0');
 
     }
 }

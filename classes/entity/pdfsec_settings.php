@@ -30,133 +30,167 @@ namespace mod_pdfsec\entity;
 defined('MOODLE_INTERNAL') || die();
 
 class pdfsec_settings {
-
-    // region Variables.
-    /** @var ?pdfsec_settings $_parent Parent settings. */
-    private $_parent;
-
-    /** @var ?string $subject Subject of the PDF. */
-    protected $subject = null;
-    /** @var ?string $keywords Keywords */
-    protected $keywords = null;
-    /** @var ?string $author of the PDF */
-    protected $author = null;
-    /** @var ?bool $printheader Hide header */
-    protected $printheader = null;
-    /** @var ?bool $printfooter Hide footer */
-    protected $printfooter = null;
-    /** @var ?string $watermark Watermark */
-    protected $watermark = null;
-    /** @var ?string $language Language */
-    protected $language = null;
-    /** @var ?string $lastpage Last page of the PDF. */
-    protected $lastpage = null;
-    /** @var ?string $firstpage First page of the PDF. */
-    protected $firstpage = null;
-
-    /** @var string $userpassword User password */
-    protected $userpassword = null;
-    /** @var string $ownerpassword Owner password */
-    protected $ownerpassword = null;
-
-    /** @var bool $canprint If user can print PDF. */
-    protected $canprint = null;
-    /** @var bool $canmodify If user can modify PDF. */
-    protected $canmodify = null;
-    /** @var bool $cancopy If user can copy text from PDF. */
-    protected $cancopy = null;
-    /** @var bool $canextract If user can extract page from PDF. */
-    protected $canextract = null;
-    /** @var bool $canassemble If user can combine other PDF with this PDF. */
-    protected $canassemble = null;
-
-    // endregion.
-
-    // region Getters.
-
-    protected function getter(string $name) {
-        if ($this->{$name} === null) {
-            if ($this->_parent == null) {
-                return null;
-            }
-            return $this->_parent->getter($name);
+    static function endsWith($haystack, $needle) {
+        $length = strlen($needle);
+        if ($length == 0) {
+            return true;
         }
-        return $this->{$name};
+
+        return (substr($haystack, -$length) === $needle);
     }
 
-    public function has(string $name): bool {
-        return $this->{$name} != null;
+    public static function wrapper($data) : pdfsec_settings {
+        return new pdfsec_settings($data);
     }
 
-    public function get_subject() {
-        return $this->getter('subject');
+    private $data;
+
+    public function __construct($data) {
+        $this->data = $data;
     }
 
-    public function get_keywords() {
-        return $this->getter('keywords');
-    }
-
-    public function get_author() {
-        return $this->getter('author');
-    }
-
-    public function get_printheader() {
-        return $this->getter('printheader');
-    }
-
-    public function get_printfooter() {
-        return $this->getter('printheader');
-    }
-
-    // endregion.
-
-    public function combine_with(pdfsec_settings $settings, bool $overwrite = false) {
-        $reflect = new \ReflectionClass($this);
-        $props = $reflect->getProperties(\ReflectionProperty::IS_PROTECTED);
-        foreach ($props as $prop) {
-            if ($this->{$prop->getName()} == null || $overwrite) {
-                $this->{$prop->getName()} = $settings->{$prop->getName()};
+    public static function from_formdata($data) {
+        if (is_object($data)) {
+            $data = (array) $data;
+        }
+        $out = [];
+        foreach (
+                ['general_sel', 'perm_sel', 'first_page_sel', 'last_page_sel', 'watermark_sel', 'subject', 'keywords', 'author',
+                        'language', 'perm_print', 'perm_modify', 'perm_extract', 'perm_copy', 'perm_assemble', 'watermarkvisible',
+                        'watermarkvisible', 'first_page_own', 'watermark_own', 'last_page_own', 'remove_header', 'remove_footer',
+                        'perm_view_password', 'perm_edit_password',
+                ] as $v) {
+            if (isset($data[$v])) {
+                $out[$v] = $data[$v];
             }
         }
+        return json_encode($out);
     }
 
-    public function set_parent(pdfsec_settings $settings) {
-        $this->_parent = $settings;
+    function is($param) : bool {
+        return isset($this->data[$param]) ? ($this->data[$param] == 1) : false;
     }
 
-    public static function from_json($json) {
-        $array = json_decode($json, true);
-
-        $object = new pdfsec_settings();
-        foreach ($array as $key => $value) {
-            $object->{$key} = $value;
+    function get($param) {
+        if (!isset($this->data[$param])) {
+            return null;
         }
-        return $object;
-    }
-
-    public function to_json(): string {
-        $array = [];
-        $reflect = new \ReflectionClass($this);
-        $props = $reflect->getProperties(\ReflectionProperty::IS_PROTECTED);
-        foreach ($props as $prop) {
-            if ($this->{$prop->getName()} != null) {
-                $array[$prop->getName()] = $this->{$prop->getName()};
-            }
+        $var = $this->data[$param];
+        if ($var === '') {
+            return null;
         }
-        return json_encode($array);
+        return $var;
     }
 
-    public static function get_default() {
-        $object = new pdfsec_settings();
-        $object->printfooter = false;
-        $object->printheader = false;
-        $object->author = '%username%';
-        $object->language = 'en';
-        $object->canprint = true;
-        $object->canmodify = false;
-        $object->cancopy = false;
-        $object->canextract = false;
-        $object->canassemble = false;
-        return $object;
+    #region general
+
+    public function remove_header() {
+        return $this->get('remove_header');
     }
+    public function remove_footer() {
+        return $this->get('remove_footer');
+    }
+    public function subject() {
+        if ($this->is('general_sel')) {
+            return get_config('mod_pdfsec', 'subject');
+        }
+        return $this->get('subject');
+    }
+
+    public function keywords() {
+        if ($this->is('general_sel')) {
+            return get_config('mod_pdfsec', 'keywords');
+        }
+        return $this->get('keywords');
+    }
+
+    public function language() {
+        if ($this->is('general_sel')) {
+            return get_config('mod_pdfsec', 'language');
+        }
+        return $this->get('language');
+    }
+
+    public function author() {
+        if ($this->is('general_sel')) {
+            return get_config('mod_pdfsec', 'author');
+        }
+        return $this->get('author');
+    }
+    #endregion
+
+    #region pages
+    public function first_page()
+    {
+        if ($this->is('first_page_sel')) {
+            return get_config('mod_pdfsec', 'firstpage');
+        }
+        return $this->get('first_page_own');
+    }
+    public function last_page()
+    {
+        if ($this->is('last_page_sel')) {
+            return get_config('mod_pdfsec', 'lastpage');
+        }
+        return $this->get('last_page_own');
+    }
+    public function watermark()
+    {
+        if ($this->is('watermark_sel')) {
+            return get_config('mod_pdfsec', 'watermark');
+        }
+        return $this->get('watermark_own');
+    }
+    public function watermarkVisibility()
+    {
+        if ($this->is('watermark_sel')) {
+            return get_config('mod_pdfsec', 'watermarkvisible')==1?0.1:0.04;
+        }
+        return $this->get('watermarkvisible')==1?0.1:0.04;
+    }
+    #endregion
+
+    #region permissions
+
+    public function password_view() {
+        return $this->get('perm_view_password');
+    }
+    public function password_edit() {
+        return $this->get('perm_edit_password');
+    }
+    public function perm_print() : bool {
+        if ($this->is('perm_sel')) {
+            return get_config('mod_pdfsec', 'perm_print') == 1;
+        }
+        return $this->get('perm_print') == 1;
+    }
+
+    public function perm_modify() : bool {
+        if ($this->is('perm_sel')) {
+            return get_config('mod_pdfsec', 'perm_modify') == 1;
+        }
+        return $this->get('perm_modify') == 1;
+    }
+
+    public function perm_extract() : bool {
+        if ($this->is('perm_sel')) {
+            return get_config('mod_pdfsec', 'perm_extract') == 1;
+        }
+        return $this->get('perm_extract') == 1;
+    }
+
+    public function perm_copy() : bool {
+        if ($this->is('perm_sel')) {
+            return get_config('mod_pdfsec', 'perm_copy') == 1;
+        }
+        return $this->get('perm_copy') == 1;
+    }
+
+    public function perm_assemble() : bool {
+        if ($this->is('perm_sel')) {
+            return get_config('mod_pdfsec', 'perm_assemble') == 1;
+        }
+        return $this->get('perm_assemble') == 1;
+    }
+    #endregion
 }

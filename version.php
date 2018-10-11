@@ -17,8 +17,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_pdfsec';
-$plugin->version = 2018080600;
+$plugin->version = 2018101000;
 $plugin->requires = 2018010100;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->release = 'v0.1-alpha';
+$plugin->maturity = MATURITY_BETA;
+$plugin->release = 'v0.99-beta';
 $plugin->dependencies = [];
