@@ -31,12 +31,15 @@ function pdfsec_supports($feature) {
     }
 }
 function pdfsec_add_instance($pdfsec, mod_pdfsec_mod_form $mform) {
+    global $DB;
     $entity=new \mod_pdfsec\entity\pdfsec();
     $entity->set_name($pdfsec->name);
     $entity->set_course($pdfsec->course);
     $entity->set_settings(\mod_pdfsec\entity\pdfsec_settings::from_formdata($mform->get_data()));
     $entity->save();
-    pdfsec_set_file($mform->get_data());
+    $cmid = $pdfsec->coursemodule;
+    $DB->set_field('course_modules', 'instance', $entity->get_id(), array('id'=>$cmid));
+    pdfsec_set_file($pdfsec);
     return $entity->get_id();
 }
 
@@ -69,7 +72,7 @@ function pdfsec_update_instance($pdfsec, mod_pdfsec_mod_form $mform) {
     $entity->set_course($pdfsec->course);
     $entity->set_settings(\mod_pdfsec\entity\pdfsec_settings::from_formdata($mform->get_data()));
     $entity->save();
-    pdfsec_set_file($mform->get_data());
+    pdfsec_set_file($pdfsec);
     return true;
 }
 
