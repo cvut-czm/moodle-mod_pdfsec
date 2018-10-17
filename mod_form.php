@@ -85,7 +85,7 @@ class mod_pdfsec_mod_form extends \mod_pdfsec\form\template_form {
         $mform->addElement('text', 'name', get_string('displayname', 'mod_pdfsec'));
         $mform->setType('name', PARAM_ALPHANUMEXT);
         $mform->addElement('filemanager', 'input_pdf', get_string('input_pdf', 'mod_pdfsec'), null,
-                array('subdirs' => 0, 'maxbytes' => 10485760, 'areamaxbytes' => 10485760, 'maxfiles' => 1,
+                array('subdirs' => 0, 'maxbytes' => 104857600, 'areamaxbytes' => 104857600, 'maxfiles' => 50,
                         'accepted_types' => array('.pdf'), 'return_types' => FILE_INTERNAL | FILE_EXTERNAL));
 
         $this->define_shared_fields();

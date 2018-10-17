@@ -34,7 +34,6 @@ list ($course, $cm) = get_course_and_cm_from_cmid($id, 'pdfsec');
 
 $pdfentity = \mod_pdfsec\entity\pdfsec::get($cm->instance);
 
-
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/pdfsec:view', $context);
@@ -81,17 +80,18 @@ for ($i = 1; $i <= $pagecount; $i++) {
     }
     $pdf->AddPage($orientation, array($s['w'], $s['h']));
     $pdf->useTemplate($tplidx);
-    $pdf->setAlpha($settings->watermarkVisibility());
+    //$pdf->setAlpha($settings->watermarkVisibility());
+    $pdf->setAlpha(0.3);
     // Projector settings $pdf->setAlpha(0.04);
     // Invisible settings $pdf->setAlpha(0.01);
     // Visible settings $pdf->setAlpha(0.3);
 
     $pdf->SetTextColor(0, 0, 0);
     $pdf->StartTransform();
-    $pdf->Rotate(rad2deg(atan($s['w'] / $s['h'])), $s['w'] / 2, $s['h'] / 2);
-    $pdf->SetFont('freesans', '', 10);
-    $pdf->MultiCell(0, 0, $settings->watermark(), 0, 'C', 0, 1, 0, $s['h'] / 2);
-    $pdf->Rotate(0);
+    //$pdf->Rotate(rad2deg(atan($s['w'] / $s['h'])), $s['w'] / 2, $s['h'] / 2);
+    $pdf->SetFont('freesans', '', 6);
+    $pdf->MultiCell($s['w']-2,2, $settings->watermark(), 0, 'R', 0, 0, 1, 1,true,0,false,true,0,'T',true);
+    //$pdf->Rotate(0);
     $pdf->StopTransform();
 
     $pdf->setAlpha(1);

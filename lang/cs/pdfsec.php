@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-$string['modulename'] = 'PDFsec';
-$string['modulenameplural'] = 'PDFsec';
-$string['pluginname'] = 'PDFsec';
+$string['modulename'] = 'PDF vodoznak';
+$string['modulenameplural'] = 'PDF vodoznak';
+$string['pluginname'] = 'PDF vodoznak';
 $string['userpreferences'] = 'Uživatelské nastavení';
 
 $string['displayname'] = 'Viditelné jméno';
