@@ -85,7 +85,7 @@ class template_form extends moodleform_mod {
     private function define_permission_settings() {
         $form = $this->_form;
 
-        $form->addElement('header', 'permission_title', get_string('title_permission', 'mod_pdfsec'));
+        $form->addElement('header', 'permission_title', get_string('title_permission', 'mod_pdfsec'));/*
         $form->addElement('selectyesno', 'perm_sel', get_string('use_template', 'mod_pdfsec'));
         $form->setDefault('perm_sel',1);
         foreach([0=>'',1=>'_global'] as $key=>$value)
@@ -115,9 +115,9 @@ class template_form extends moodleform_mod {
         $form->disabledIf('perm_extract'.'_global','perm_sel','neq','3');
         $form->disabledIf('perm_copy'.'_global','perm_sel','neq','3');
         $form->disabledIf('perm_assemble'.'_global','perm_sel','neq','3');
-
+*/
         $form->addElement('passwordunmask', 'perm_view_password', get_string('perm_view_password', 'mod_pdfsec'));
-        $form->addElement('passwordunmask', 'perm_edit_password', get_string('perm_edit_password', 'mod_pdfsec'));
+  //      $form->addElement('passwordunmask', 'perm_edit_password', get_string('perm_edit_password', 'mod_pdfsec'));
     }
 
 

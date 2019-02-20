@@ -23,8 +23,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot . '/mod/page/backup/moodle2/restore_page_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/pdfsec/backup/moodle2/restore_pdfsec_stepslib.php'); // Because it exists (must)
 
 /**
  * page restore task that provides all the settings and steps to perform one

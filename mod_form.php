@@ -92,7 +92,7 @@ class mod_pdfsec_mod_form extends \mod_pdfsec\form\template_form {
 
         $this->standard_coursemodule_elements();
 
-        $this->add_action_buttons();
+        $this->add_action_buttons(true,null,false);
 
     }
 }

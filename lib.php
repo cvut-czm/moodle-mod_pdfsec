@@ -81,7 +81,7 @@ function pdfsec_delete_instance($pdfsec) {
 }
 
 function pdfsec_get_coursemodule_info($cm) {
-    global $DB;
+    global $DB,$PAGE;
     $fs= get_file_storage();
     if (!($folder = $DB->get_record('pdfsec', array('id' => $cm->instance)))) {
         return null;
@@ -89,10 +89,17 @@ function pdfsec_get_coursemodule_info($cm) {
     $context = context_module::instance($cm->id);
     $cminfo = new cached_cm_info();
     $cminfo->customdata = '';
+    $any=false;
     foreach($fs->get_area_files($context->id,'mod_pdfsec','input_pdf',0,"itemid, filepath, filename",false) as $file) {
+        $any=true;
         $cminfo->customdata .= '<a class="" onclick="" href="'.(new moodle_url('/mod/pdfsec/view.php',['id'=>$cm->id,'file'=>$file->get_id()])).'">';
         $cminfo->customdata .= '<img src="/mod/pdfsec/pix/icon.svg" class="iconlarge activityicon" alt=" " role="presentation"/>';
         $cminfo->customdata .= '<span class="instancename">'.$file->get_filename().'<span class="accesshide "> File</span></span></a><br/>';
+    }
+    if(!$any && $PAGE->user_is_editing())
+    {
+        $cminfo->customdata .= '<img src="/mod/pdfsec/pix/icon.svg" class="iconlarge activityicon" alt=" " role="presentation"/>';
+        $cminfo->customdata .= '<span class="text-warning">'.get_string('no_file','mod_pdfsec').'</span>';
     }
     return $cminfo;
 }

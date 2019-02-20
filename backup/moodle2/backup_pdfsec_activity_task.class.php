@@ -25,7 +25,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot . '/mod/folder/backup/moodle2/backup_folder_stepslib.php');
+require_once($CFG->dirroot . '/mod/pdfsec/backup/moodle2/backup_pdfsec_stepslib.php');
 
 class backup_pdfsec_activity_task extends backup_activity_task {
 

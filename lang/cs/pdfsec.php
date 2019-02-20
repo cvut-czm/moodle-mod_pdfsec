@@ -39,6 +39,7 @@ $string['language'] = 'Jazyk';
 $string['keywords'] = 'Klíčová slova';
 $string['remove_footer'] = 'Odstranit zápatí';
 $string['remove_header'] = 'Odstranit hlavičku';
+$string['no_file'] = 'Nebyl nahrán žádný soubor pro PDF vodoznak';
 
 $string['perm_print'] = 'Povolit tisk';
 $string['perm_modify'] = 'Povolit změny';

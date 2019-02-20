@@ -32,6 +32,7 @@ $string['datasource_cdr'] = 'PDFsec syntax';
 $string['use_template'] = 'Use global settings';
 $string['templates'] = 'Templates';
 $string['pluginadministration'] = '';
+$string['no_file'] = 'No file uploaded for PDF watermark';
 
 $string['subject'] = 'Subject';
 $string['input_pdf'] = 'Input PDF';

@@ -28,9 +28,17 @@
 require_once('../../config.php');
 
 $id = required_param('id', PARAM_INT);           // Course ID
-$fileid = required_param('file', PARAM_INT);           // File ID
+$fileid = optional_param('file', null,PARAM_INT);           // File ID
+
+
 /** @var cm_info $cm */
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'pdfsec');
+
+if($fileid===null)
+{
+    redirect(new moodle_url('/course/view.php',['id'=>$course->id]));
+    die();
+}
 
 $pdfentity = \mod_pdfsec\entity\pdfsec::get($cm->instance);
 
@@ -55,8 +63,8 @@ $pdf->SetKeywords($settings->keywords());
 $pdf->SetAuthor($settings->author());
 
 // remove default header/footer
-$pdf->setPrintHeader(!$settings->remove_header());
-$pdf->setPrintFooter(!$settings->remove_footer());
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
 
 $language_meta = Array();
 $language_meta['a_meta_charset'] = 'UTF-8';
@@ -90,7 +98,7 @@ for ($i = 1; $i <= $pagecount; $i++) {
     $pdf->StartTransform();
     //$pdf->Rotate(rad2deg(atan($s['w'] / $s['h'])), $s['w'] / 2, $s['h'] / 2);
     $pdf->SetFont('freesans', '', 6);
-    $pdf->MultiCell($s['w']-2,2, $settings->watermark(), 0, 'R', 0, 0, 1, 1,true,0,false,true,0,'T',true);
+    $pdf->MultiCell($s['w'] - 2, 2, $settings->watermark(), 0, 'R', 0, 0, 1, 1, true, 0, false, true, 0, 'T', true);
     //$pdf->Rotate(0);
     $pdf->StopTransform();
 
@@ -120,10 +128,9 @@ if (array_key_exists('secpdf', $options)) {
     if (is_array($secpdfoptions)) {
         if (array_key_exists('secpdfuserpwd', $secpdfoptions)) {
             $user_pass = $secpdfoptions['secpdfuserpwd'];
-        }
-        if (array_key_exists('secpdfownerpwd', $secpdfoptions)) {
-            $owner_pass = $secpdfoptions['secpdfownerpwd'];
-        }
+            $pdf->SetProtection($permissions, (empty($user_pass) ? '' : $user_pass), (empty($owner_pass) ? null : $owner_pass), $mode = 3,
+                    null);
+        }/*
         if (!array_key_exists('secpdfpermprint', $secpdfoptions)) {
             $permissions[] = 'print';
         }
@@ -138,12 +145,10 @@ if (array_key_exists('secpdf', $options)) {
         }
         if (!array_key_exists('secpdfpermassemble', $secpdfoptions)) {
             $permissions[] = 'assemble';
-        }
+        }*/
+        // set security permission - mode 3 - 256 AES
     }
 
-    // set security permission - mode 3 - 256 AES
-    $pdf->SetProtection($permissions, (empty($user_pass) ? '' : $user_pass), (empty($owner_pass) ? null : $owner_pass), $mode = 3,
-            null);
 
 }
 $pdf->Output();
